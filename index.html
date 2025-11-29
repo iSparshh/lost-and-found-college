@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Approved missing person reports</h2>
+{% if reports %}
+<ul class="report-list">
+  {% for r in reports %}
+  <li class="report-item">
+    <div class="report-photo">
+      {% if r.photo_filename %}
+        <img src="{{ url_for('files', filename=r.photo_filename) }}" alt="photo">
+      {% else %}
+        <div class="no-photo">No photo</div>
+      {% endif %}
+    </div>
+    <div class="report-info">
+      <h3>{{ r.name }}</h3>
+      <p class="meta">
+        Age: {{ r.age or "Unknown" }} |
+        Location: {{ r.location or "Not specified" }}
+      </p>
+      <p>{{ r.description }}</p>
+      <p class="meta">
+        Status: {{ r.status }} |
+        Posted: {{ r.created_at }}
+      </p>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No approved reports yet.</p>
+{% endif %}
+{% endblock %}
