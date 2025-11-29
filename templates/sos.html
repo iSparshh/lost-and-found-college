@@ -1,1 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>SOS — I need help</h2>
+
+<form method="post" class="form-card" id="sosForm">
+  <label>
+    Your name (optional)
+    <input type="text" name="name" placeholder="Your name">
+  </label>
+
+  <label>
+    Where are you now? (location)
+    <input type="text" name="location_text" id="sosLocation" placeholder="Example: Near main market">
+  </label>
+
+  <label>
+    Message
+    <textarea name="message" rows="3" placeholder="Describe what is wrong"></textarea>
+  </label>
+
+  <input type="hidden" name="lat" id="sosLat">
+  <input type="hidden" name="lon" id="sosLon">
+
+  <button type="submit">Send SOS (demo)</button>
+  <button type="button" class="outline-btn" id="fillLocationBtn">Use my browser location</button>
+
+  <p class="note">This is only a college demo. It does not contact real police.</p>
+</form>
+
+{% if nearby_reports %}
+<div class="form-card" style="margin-top:12px;">
+  <h3>Nearby missing person reports (by location match)</h3>
+  <p class="note">These reports have a similar location to your SOS. People nearby can try to help.</p>
+  <ul class="report-list">
+    {% for r in nearby_reports %}
+    <li class="report-item">
+      <div class="report-info">
+        <h3>{{ r.name }}</h3>
+        <p class="meta">
+          Age: {{ r.age or "Unknown" }} • Location: {{ r.location or "Not specified" }}
+        </p>
+        <p>{{ r.description }}</p>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<script>
+document.getElementById('fillLocationBtn').addEventListener('click', function(){
+  if(!navigator.geolocation){
+    alert('Geolocation not supported in this browser.');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    document.getElementById('sosLat').value = pos.coords.latitude;
+    document.getElementById('sosLon').value = pos.coords.longitude;
+    // we still keep location_text as user friendly text
+    alert('Location captured. Please also describe place in words.');
+  }, function(err){
+    alert('Could not get location: ' + err.message);
+  });
+});
+</script>
+
+{% endblock %}
 
